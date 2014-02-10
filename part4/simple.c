@@ -6,19 +6,21 @@
 #include <linux/sched.h>
 #define MAX_TABS 20
 int i;
-char tabs[20];
+char tabs[MAX_TABS];
 
 void DFS_print(struct task_struct *task, int count){
 	struct list_head *l;
 	struct task_struct *tp;
-	char tabs[count];
 	
-	count++;
-	
+	tabs[count++]='\0';	
+
 	list_for_each(l, &(task->children)){
 		tp = list_entry(l, struct task_struct, sibling);
-		printk(KERN_INFO "%stask pid: %i\n", tabs, tp->pid);
+		printk(KERN_INFO "%s\\_[%i] %s\n", tabs, tp->pid, tp->comm);
+		
+		tabs[count-1]=32;
 		DFS_print(tp, count);
+		tabs[count+1]=32;
 	}
 }
 
@@ -29,12 +31,12 @@ int simple_init(void)
        printk(KERN_INFO "Loading Module\n");
 	
 	for(i=0; i<MAX_TABS-1; i++){
-		tabs[i] = '\t';
+		tabs[i] = 32;
 	}
 	tabs[MAX_TABS-1] = '\0';	
-	printk("%shi%s\n", tabs, tabs);
+	//printk("%shi%s\n", tabs, tabs);
 	
-	//DFS_print(&init_task, 0);
+	DFS_print(&init_task, 0);
 
        return 0;
 }

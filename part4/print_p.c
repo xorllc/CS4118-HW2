@@ -4,11 +4,48 @@
 #include <linux/list.h>
 #include <linux/slab.h>
 #include <linux/mm.h>
+#include <linux/sched.h>
+
+struct task_struct *t;
+struct list_head *lh;
+int i;
+	
+/*void dfs_print(struct list_head *list, struct task_struct task){
+	list_for_each(list, &((&task)->children)){
+		//t = list_entry(list, struct task_struct, sibling);
+		//printk(KERN_INFO "task pid: %i\n", t->pid);
+		
+	}
+}*/
+
+int dummy_fun(struct list_head *l, struct task_struct tk, struct task_struct *tp){
+	list_for_each(l, &((&tk)->children)){
+		tp = list_entry(l, struct task_struct, sibling);
+		printk(KERN_INFO "task pid: %i\n", tp->pid);
+	}
+	return 0;
+}
+
 
 /* This function is called when the module is loaded. */
 int simple_init(void)
 {
        printk(KERN_INFO "Loading Module\n");
+	
+	//linearly prints tasks
+	/*for_each_process(task){
+		printk(KERN_INFO "task pid: %i\n", task->pid);
+	}*/
+
+	//the following code works fine and prints task pid
+	/*list_for_each(lh, &((&init_task)->children)){
+		t = list_entry(lh, struct task_struct, sibling);
+		printk(KERN_INFO "task pid: %i\n", t->pid);
+	}*/
+	
+	//the dummy_fun() produces warning: frame size larger than
+	dummy_fun(lh, init_task, t);
+	
        return 0;
 }
 

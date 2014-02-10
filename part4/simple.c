@@ -12,6 +12,7 @@ void DFS_print(struct task_struct *task){
 	list_for_each(l, &(task->children)){
 		tp = list_entry(l, struct task_struct, sibling);
 		printk(KERN_INFO "task pid: %i\n", tp->pid);
+		DFS_print(tp);
 	}
 }
 
